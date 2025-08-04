@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diego Alejandro Rodriguez Reyes - Portafolio</title>
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: #ddd;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 220px;
+      height: 100vh;
+      background-color: #111;
+      border-right: 2px solid #0077cc;
+      box-shadow: 2px 0 8px rgba(0,119,204,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 2rem;
+      color: #0077cc;
+      user-select: none;
+      z-index: 1000;
+    }
+    #sidebar img {
+      width: 140px;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,119,204,0.7);
+      background: #000;
+    }
+    #sidebar h2 {
+      margin: 0 0 2rem 0;
+      font-size: 1.4rem;
+      text-align: center;
+      font-weight: 700;
+      color: #00aaff;
+    }
+
+    #sidebar nav {
+      width: 100%;
+    }
+    #sidebar nav a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: #0077cc;
+      font-weight: 600;
+      text-decoration: none;
+      border-left: 4px solid transparent;
+      transition: background-color 0.3s, border-left-color 0.3s;
+      cursor: pointer;
+    }
+    #sidebar nav a:hover, #sidebar nav a.active {
+      background-color: #0077cc22;
+      border-left-color: #0077cc;
+      color: #00aaff;
+    }
+
+    /* Main Content */
+    #main {
+      margin-left: 220px;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 2rem 3rem;
+      background-color: #000;
+      scroll-behavior: smooth;
+    }
+
+    section {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    /* Inicio Section */
+    #inicio h1 {
+      color: #00aaff;
+      font-size: 3rem;
+      margin-bottom: 0.3rem;
+      text-shadow: 0 0 8px #0077cc;
+    }
+    #inicio h3 {
+      margin-top: 0;
+      font-weight: 400;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+    #inicio p {
+      line-height: 1.6;
+      font-size: 1.15rem;
+      color: #ccc;
+      max-width: 850px;
+    }
+    #inicio .datos {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #aaa;
+    }
+    #inicio .datos span {
+      display: block;
+      margin: 5px 0;
+    }
+
+    /* Portafolio Section */
+    #portafolio h2 {
+      color: #0077cc;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card.project-card {
+      border-radius: 1rem;
+      background-color: #111;
+      border: 1px solid #222;
+      box-shadow: 0 0 8px rgba(0, 119, 204, 0.2);
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      cursor: pointer;
+      margin-bottom: 2rem;
+    }
+
+    .card.project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 12px rgba(0, 119, 204, 0.4);
+    }
+
+    .card-img-top {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .card-body {
+      background-color: #111;
+      padding: 1rem 1.5rem;
+    }
+
+    .card-body h5 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0077cc;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #ccc;
+    }
+
+    /* Responsive grid for projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      background-color: rgba(0, 0, 0, 0.95);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 85%;
+      box-shadow: 0 0 20px rgba(0, 119, 204, 0.3);
+      border-radius: 10px;
+      animation: scaleIn 0.3s ease-in-out;
+    }
+
+    .lightbox .close {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      font-size: 40px;
+      color: #0077cc;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .lightbox .close:hover {
+      color: #ff5050;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    /* Scrollbar */
+    #main::-webkit-scrollbar {
+      width: 8px;
+    }
+    #main::-webkit-scrollbar-thumb {
+      background-color: #0077cc66;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <!-- Aquí el logo, reemplaza el src si tienes URL directa -->
+    <img src="img\entera.png" alt="Logo Instituto Departamental de Oriente" />
+    <h2>Diego Alejandro</h2>
+    <nav>
+      <a href="#" id="link-inicio" class="active">Inicio</a>
+      <a href="#" id="link-portafolio">Portafolio</a>
+    </nav>
+  </div>
+
+  <main id="main">
+    <!-- Sección Inicio -->
+    <section id="inicio" class="active">
+      <h1>Diego Alejandro Rodriguez Reyes</h1>
+      <h3>Estudiante del Instituto Departamental de Oriente</h3>
+      <p>
+        Hola, soy Diego Alejandro, tengo 17 años y nací el 7 de diciembre de 2007 en Honduras. Actualmente curso el último año de bachillerato en informática, donde me apasiono por la tecnología, el diseño digital y la programación.
+      </p>
+      <p>
+        Me encanta combinar creatividad con lógica para desarrollar proyectos innovadores y visualmente atractivos. Además, disfruto mucho del diseño gráfico, especialmente en Photoshop, que es una de mis principales habilidades.
+      </p>
+      <p>
+        En mi tiempo libre me gusta aprender nuevas tecnologías, participar en competencias de programación y mejorar constantemente mis habilidades tanto en software como en hardware.
+      </p>
+      <div class="datos">
+        <span><strong>Edad:</strong> 17 años</span>
+        <span><strong>Fecha de nacimiento:</strong> 7 de diciembre de 2007</span>
+        <span><strong>Estudios:</strong> Último año de bachiller en informática</span>
+        <span><strong>Origen:</strong> Hondureño</span>
+      </div>
+    </section>
+
+    <!-- Sección Portafolio -->
+    <section id="portafolio">
+      <h2>Trabajos de Photoshop</h2>
+      <div class="projects-grid">
+        <!-- Aquí los proyectos con cards como antes -->
+        <div class="card project-card">
+          <img src="img/ara macao.png" alt="Ara Macao" class="card-img-top" />
+          <div class="card-body">
+            <h5>Ara Macao</h5>
+            <p>Una representación colorida del ave nacional de nuestro país, editada para resaltar los detalles naturales de su plumaje.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/banner.png" alt="Banner" class="card-img-top" />
+          <div class="card-body">
+            <h5>Banner</h5>
+            <p>Diseño de un banner promocional usando técnicas de capas, texto y efectos gráficos modernos.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/Cara con acne 1.png" alt="Edición rostro con acné" class="card-img-top" />
+          <div class="card-body">
+            <h5>Edición de rostro con acné</h5>
+            <p>Retoque profesional para eliminar imperfecciones faciales sin perder realismo en la piel.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/botones.png" alt="Botones" class="card-img-top" />
+          <div class="card-body">
+            <h5>Botones</h5>
+            <p>Diseño gráfico de botones para interfaz de usuario con estilo moderno y visualmente claro.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/cristo de picaso.png" alt="Cristo del Picasso" class="card-img-top" />
+          <div class="card-body">
+            <h5>Cristo del Picasso</h5>
+            <p>Representación artística de una escultura con inspiración abstracta y efectos de luz/sombra.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/Dientes amarillos 2.png" alt="Edición dientes amarillos" class="card-img-top" />
+          <div class="card-body">
+            <h5>Edición de dientes amarillos</h5>
+            <p>Blanqueamiento dental digital manteniendo una apariencia natural y profesional.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/ejercicio 4.png" alt="Restauración de imágenes" class="card-img-top" />
+          <div class="card-body">
+            <h5>Restauración de imágenes</h5>
+            <p>Proceso de restauración de una fotografía antigua o dañada, devolviéndole calidad y color.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/Honduras mapa.png" alt="Mapa de Honduras" class="card-img-top" />
+          <div class="card-body">
+            <h5>Mapa de Honduras</h5>
+            <p>Ilustración geográfica del país con estilos gráficos representativos y colores patrios.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/honduras.png" alt="Honduras" class="card-img-top" />
+          <div class="card-body">
+            <h5>Honduras</h5>
+            <p>Diseño digital alusivo a Honduras, destacando elementos culturales y naturales.</p>
+          </div>
+        </div>
+        <div class="card project-card">
+          <img src="img/Ojos rojos 5.png" alt="Corrección ojos rojos" class="card-img-top" />
+          <div class="card-body">
+            <h5>Corrección de ojos rojos</h5>
+            <p>Eliminación del efecto de ojos rojos típico de cámaras antiguas, logrando un aspecto realista.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox para imágenes del portafolio -->
+  <div class="lightbox" id="lightbox">
+    <span class="close" id="lightbox-close">&times;</span>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="Imagen ampliada" />
+  </div>
+
+  <script>
+    // Navegación sidebar
+    const linkInicio = document.getElementById('link-inicio');
+    const linkPortafolio = document.getElementById('link-portafolio');
+    const inicio = document.getElementById('inicio');
+    const portafolio = document.getElementById('portafolio');
+
+    linkInicio.addEventListener('click', e => {
+      e.preventDefault();
+      linkInicio.classList.add('active');
+      linkPortafolio.classList.remove('active');
+      inicio.classList.add('active');
+      portafolio.classList.remove('active');
+      window.scrollTo(0,0);
+    });
+
+    linkPortafolio.addEventListener('click', e => {
+      e.preventDefault();
+      linkPortafolio.classList.add('active');
+      linkInicio.classList.remove('active');
+      portafolio.classList.add('active');
+      inicio.classList.remove('active');
+      window.scrollTo(0,0);
+    });
+
+    // Lightbox funcionalidad
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const projectCards = document.querySelectorAll('.project-card img');
+
+    projectCards.forEach(img => {
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+      });
+    });
+
+    lightboxClose.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+      lightboxImg.src = '';
+      lightboxImg.alt = '';
+    });
+
+    // Cerrar lightbox al hacer click fuera de la imagen
+    lightbox.addEventListener('click', (e) => {
+      if(e.target === lightbox) {
+        lightbox.style.display = 'none';
+        lightboxImg.src = '';
+        lightboxImg.alt = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
